@@ -45,9 +45,10 @@ jobs:
         - -ec
         - |
           git clone master-branch master-version
-          echo '{"TERRAFORM_VERSION":"'$(cat terraform-release/version)'"}' | tee master-version/version.json
+          echo '{"TERRAFORM_VERSION":"'$(cat terraform-release/version)'"}' | tee master-version/tf.json
   - put: terraform-toolchain-image
     params:
       build: master-version
-      build_args_file: master-version/version.json
+      build_args_file: master-version/tf.json
+      tag_file: master-version/version
       tag_as_latest: true
