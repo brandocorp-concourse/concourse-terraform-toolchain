@@ -10,7 +10,7 @@ resources:
   source:
     username: ((github-username))
     access_token: ((github-access-token)) 
-    uri: https://github.com/brandocorp/concourse-terraform-toolchain.git
+    uri: https://github.com/brandocorp-concourse/concourse-terraform-toolchain.git
     branch: master
 - name: terraform-toolchain-image
   type: docker-image
@@ -32,21 +32,22 @@ jobs:
       image_resource:
         type: docker-image
         source:
-          repository: ubuntu
+          repository: brandocorp/concourse-ubuntu-build
           tag: latest
       inputs:
       - name: master-branch
       - name: terraform-release
       outputs:
-      - name: binary
+      - name: master-version
       run:
         path: sh
         args:
         - -ec
         - |
-          echo '{"TERRAFORM_VERSION":"$(cat terraform-release/version)"}' | tee master-branch/version.json
+          git clone master-branch master-version
+          echo '{"TERRAFORM_VERSION":"'$(cat terraform-release/version)'"}' | tee master-version/version.json
   - put: terraform-toolchain-image
     params:
-      build: master-branch
-      build_args_file: master-branch/version.json
+      build: master-version
+      build_args_file: master-version/version.json
       tag_as_latest: true
