@@ -26,7 +26,7 @@ jobs:
     trigger: true
   - get: terraform-release
     trigger: true
-  - task: download-terraform-release
+  - task: process-terraform-version
     config:
       platform: linux
       image_resource:
